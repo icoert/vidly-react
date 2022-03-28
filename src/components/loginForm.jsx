@@ -1,6 +1,9 @@
 import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Joi from "joi-browser";
 import Form from "./common/form";
+import * as authService from "../services/authService.js";
+import { toast } from "react-toastify";
 
 class LoginForm extends Form {
   state = {
@@ -13,9 +16,24 @@ class LoginForm extends Form {
     password: Joi.string().required().label("Password"),
   };
 
-  doSubmit = () => {
-    // call the server
-    console.log("login submitted");
+  doSubmit = async () => {
+    try {
+      const { data } = this.state;
+      const { data: jwt } = await authService.login(
+        data.username,
+        data.password
+      );
+
+      localStorage.setItem("token", jwt);
+
+      this.props.navigate("/");
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        const errors = { ...this.state.errors };
+        errors.username = ex.response.data;
+        this.setState({ errors });
+      }
+    }
   };
 
   render() {
@@ -32,4 +50,6 @@ class LoginForm extends Form {
   }
 }
 
-export default LoginForm;
+export default function LoginFormFunction(props) {
+  return <LoginForm {...props} params={useParams()} navigate={useNavigate()} />;
+}
