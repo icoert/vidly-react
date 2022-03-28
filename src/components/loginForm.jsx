@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import Joi from "joi-browser";
 import Form from "./common/form";
 import * as authService from "../services/authService.js";
-import { toast } from "react-toastify";
 
 class LoginForm extends Form {
   state = {
@@ -26,7 +25,8 @@ class LoginForm extends Form {
 
       localStorage.setItem("token", jwt);
 
-      this.props.navigate("/");
+      // this.props.navigate("/");
+      window.location = "/"; //full reload
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors };

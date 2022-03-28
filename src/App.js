@@ -1,4 +1,3 @@
-import './App.css';
 import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
@@ -7,6 +6,8 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import jwtDecode from 'jwt-decode';
 import Movies from './components/movies';
 import NavBar from './components/navBar';
 import Dashboard from './components/admin/dashboard';
@@ -16,16 +17,25 @@ import Rentals from './components/rentals';
 import Customers from './components/customers';
 import LoginForm from './components/loginForm';
 import RegisterForm from './components/registerForm';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import './App.css';
 
 class App extends Component {
+  state = {};
+
+  componentDidMount() {
+    try {
+      const jwt = localStorage.getItem('token');  
+      const user = jwtDecode(jwt);
+      this.setState({ user });
+    } catch (ex) {}
+  }
+
   render () {
       return (
         <Router>
           <ToastContainer />
-          <NavBar />
+          <NavBar user={this.state.user} />
           <main className="container">
             <Routes>
               <Route path="/" exact element={<Navigate replace to="/movies" />} />

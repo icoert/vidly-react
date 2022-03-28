@@ -1,10 +1,10 @@
 import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Form from "./common/form";
 import Joi from "joi-browser";
 import * as userService from "../services/userService";
-import { toast } from "react-toastify";
 
-export default class RegisterForm extends Form {
+class RegisterForm extends Form {
   state = {
     data: { username: "", password: "", name: "" },
     errors: {},
@@ -18,10 +18,12 @@ export default class RegisterForm extends Form {
 
   doSubmit = async () => {
     try {
-      const res = await userService.register(this.state.data);
-      if (res.status === 200) {
-        toast.success("User was created.");
-      }
+      const response = await userService.register(this.state.data);
+      localStorage.setItem("token", response.headers["x-auth-token"]);
+
+      // this.props.navigate("/");
+
+      window.location = "/"; //full reload
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors };
@@ -44,4 +46,10 @@ export default class RegisterForm extends Form {
       </div>
     );
   }
+}
+
+export default function RegisterFormFunction(props) {
+  return (
+    <RegisterForm {...props} params={useParams()} navigate={useNavigate()} />
+  );
 }
