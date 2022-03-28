@@ -2,7 +2,6 @@ import http from './httpService';
 import { apiURL } from '../config.json';
 
 const apiEndpoint = apiURL + "/movies";
-const auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjQwM2IxYzFiMmUxNjU4YTljZDZlMDEiLCJpYXQiOjE2NDgzNzY2MDV9.MTEkPRdq39lOfAwfjaJ_Gu81fnDPZhzvi1WUMAEF2QM";
 
 function movieURL(id) {
     return `${apiEndpoint}/${id}`

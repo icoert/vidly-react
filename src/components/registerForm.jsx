@@ -1,6 +1,8 @@
 import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
+import * as userService from "../services/userService";
+import { toast } from "react-toastify";
 
 export default class RegisterForm extends Form {
   state = {
@@ -14,8 +16,19 @@ export default class RegisterForm extends Form {
     name: Joi.string().required().min(3).label("Name"),
   };
 
-  doSubmit = () => {
-    console.log("register submitted");
+  doSubmit = async () => {
+    try {
+      const res = await userService.register(this.state.data);
+      if (res.status === 200) {
+        toast.success("User was created.");
+      }
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        const errors = { ...this.state.errors };
+        errors.username = ex.response.data;
+        this.setState({ errors });
+      }
+    }
   };
 
   render() {
